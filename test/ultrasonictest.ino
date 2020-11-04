@@ -18,13 +18,27 @@ void setup() {
 }
 
 void loop() {
-   Serial.print(ultrasonic_read(us_left_trigger, us_left_echo));
-   Serial.print(" ");
-   Serial.print(ultrasonic_read(us_centre_trigger, us_centre_echo));
-   Serial.print(" ");
-   Serial.print(ultrasonic_read(us_right_trigger, us_right_echo));
-   Serial.println();
-   delay(100);
+   if (Serial.available() > 0) {
+      String data = Serial.readStringUntil(' '); // US L
+      if (data == "US"){
+         process_us();
+      } else {
+         // error
+      }
+   }
+}
+
+void process_us(){
+   String data = Serial.readStringUntil('\n'); // US L
+   if (data == "L"){
+      Serial.println(ultrasonic_read(us_left_trigger, us_left_echo));
+   } else if (data == "C"){
+      Serial.println(ultrasonic_read(us_centre_trigger, us_centre_echo));
+   } else if (data == "R"){
+      Serial.println(ultrasonic_read(us_right_trigger, us_right_echo));
+   } else {
+      return;
+   }
 }
 
 double ultrasonic_read(int ping, int echo){

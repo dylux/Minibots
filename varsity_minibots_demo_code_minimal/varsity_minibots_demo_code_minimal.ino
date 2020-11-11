@@ -32,21 +32,23 @@ void setup() {
 }
 
 void loop() {
-  // put your main code here, to run repeatedly:
-
-  
-  // This main loop was used for the robot demo
-  // It has the wall positions and ping-pong ball positions hard coded
-
-  // Initialize gripper position
-  gripperSetPosition();
-
-  turnDegreesLeft(90);
-  stopMotors();
-  
-  delay(1000);
-  gripperGrasp();
+  for(int i = 0; i<100; i++){
+    driveInCorridor();
+  }
   
   stopMotors();
-  delay(5000);
+  delay(10000);
+}
+
+void driveInCorridor(){
+  float distToLeft = readLeftUS();
+  float distToright = readRightUS();
+
+  float baseSpeed = 20;
+  float turnAmount = 20;
+  float leftMotorSpeed = (distToRight / (distToRight+distToLeft))*turnAmount + baseSpeed;
+  float rightMotorSpeed = (distToLeft / (distToRight+distToLeft))*turnAmount + baseSpeed;
+
+  moveL(leftMotorSpeed,FWD);
+  moveR(rightMotorSpeed,FWD);
 }

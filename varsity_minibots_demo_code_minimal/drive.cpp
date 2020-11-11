@@ -70,9 +70,8 @@ void stopMotors() {
 void gripperSetPosition() {
   wrist.attach(WRIST_PIN);
   gripper.attach(GRIPPER_PIN);
-  
-  wrist.write(80);
-  gripper.write(180);
+  wrist.write(100);
+  gripper.write(90);
   delay(1000);
   
   wrist.detach();
@@ -88,7 +87,7 @@ void gripperGrasp() {
   
   gripper.write(175);
   delay(1000);
-  wrist.write(80);
+  wrist.write(60);
   delay(300);
 
   
@@ -99,15 +98,22 @@ void gripperGrasp() {
 
 // Turn left(counterclockwise when viewed from above) using a proportional control on the gyro sensor readings
 void turnDegreesLeft(float targetAngle) {
-
   float integral = 0;
-  float angleAdjustment = 0.45;
+  // float angleAdjustment = 0.45;
   float basePWM = 40;
   float kp = 0.2;
+  unsigned long prevtime = micros();
   while(true) {
     sensors_event_t a, g, temp;
     mpu.getEvent(&a, &g, &temp);
+    unsigned long curtime = micros();
+    float delta = curtime - prevtime;
 
+    prevtime = curtime;
+    Serial.println(delta);
+    
+    float angleAdjustment = delta / 1000000.0 / PI * 180.0;
+    
     integral += g.gyro.z * angleAdjustment;
 
     float error = targetAngle - integral;

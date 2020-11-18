@@ -32,8 +32,8 @@ void setup() {
 
 void loop() {
   gripperSetPosition();
-  unsigned long time = millis();
-  while (millis() - time < 3*1000){
+  unsigned long startTime = millis();
+  while (millis() - startTime < 3*1000){
     driveInCorridor();
   }
   

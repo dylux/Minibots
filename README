@@ -5,5 +5,3 @@ Okay, so here is how we split the work:
 2) Ultrasonic: We need a function to set the threshold of the ultrasonic sensor and a function to check if that threshold is maintained
 3) Sensors: I am not sure what is the point of the sensors, so I'd say we only need to implement a function to return the status of the sensors, to check if they are normal.
 4) Claws: We need to implement the function which controls the claws, by passing two ints to determine how wide the claw should be and (maybe) how fast.
-
-HelloWorld

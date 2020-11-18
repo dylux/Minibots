@@ -12,6 +12,8 @@ void moveL(float power, bool dir);
 // Stop the motors all together
 void stopMotors();
 
+void driveForDuration(int motorSpeed, int duration);
+
 // Base position of the gripper (close gripper and move it upwards)
 void gripperSetPosition();
 // Move the gripper down and open it to grasp the ping pong ball
@@ -21,6 +23,7 @@ void gripperGrasp();
 
 // Turn left(counterclockwise when viewed from above) using a proportional control on the gyro sensor readings
 void turnDegreesLeft(float targetAngle);
+void turnDegreesRight(float targetAngle);
 // Follow the right hand side of the wall using a proportional/derivative controller. 
 void followRightWall(float frontDistanceCutoff);
 

@@ -32,21 +32,21 @@ void setup() {
 
 void loop() {
   //Serial.println(readFrontUS());
-  //gripperSetPosition();
+
   driveInCorridorUntilIntersection();
   stopMotors();
   delay(1000);
-  gripperGrasp();
-  delay(1000);
-  /*unsigned long time = millis();
-  while (millis() - time < 3*1000){
-    driveInCorridor();
-  }
-  
+  handleIntersection();
   stopMotors();
   delay(1000);
-  gripperGrasp();
-  delay(10000);*/
+  
+  // gripperGrasp();
+  // gripperSetPosition();
+
+  /*
+  while (millis() - startTime < 3*1000){
+    driveInCorridor();
+  }*/
 }
 
 void driveInCorridorUntilIntersection(){
@@ -65,4 +65,22 @@ void driveInCorridorUntilIntersection(){
     distToLeft = readLeftUS();
     distToRight = readRightUS();
   }
+}
+
+void handleIntersection(){
+  bool canGoLeft = (readLeftUS() > GRID_DIST);
+  bool canGoForward = (readFrontUS() > GRID_DIST);
+  bool canGoRight = (readRightUS() > GRID_DIST);
+  driveForDuration(40,500);
+  if(canGoRight){
+    turnDegreesRight(90);
+  }
+  else if(canGoForward){
+    
+  } else if(canGoLeft) {
+    turnDegreesLeft(90);
+  } else {
+    turnDegreesLeft(180);
+  }
+  driveForDuration(70,1000);
 }

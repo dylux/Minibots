@@ -49,3 +49,4 @@
 #define US_NUM_READINGS 2
 #define INF 1e9
 #define WALL_DIST 15
+#define GRID_DIST 30

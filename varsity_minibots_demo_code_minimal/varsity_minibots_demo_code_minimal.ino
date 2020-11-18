@@ -35,6 +35,10 @@ void loop() {
   unsigned long startTime = millis();
   while (millis() - startTime < 3*1000){
     driveInCorridor();
+
+    if(detectIntersection()){
+      handleIntersection();
+    }
   }
   
   stopMotors();
@@ -54,4 +58,40 @@ void driveInCorridor(){
 
   moveL(leftMotorSpeed,FWD);
   moveR(rightMotorSpeed,FWD);
+}
+
+bool detectIntersection(){
+  int gridLength = 20;
+  if (readLeftUS() > gridLength || readRightUS() > gridLength) {
+    return true;
+  }
+  else{
+    return false;
+  }
+}
+
+void handleIntersection(){
+  bool canGoLeft = (readLeftUS() > gridLength);
+  bool canGoFront = (readFrontUS() > gridLength);
+  bool canGoRight = (readRightUS() > gridLength);
+  driveForDuration(70,1000);
+  if(canGoRight){
+    turnDegreesRight(90);
+  }
+  else if(canGoForward){
+    
+  } else if(canGoLeft) {
+    turnDegreesLeft(90);
+  } else {
+    turnDegreesLeft(180);
+  }
+  driveForDuration(70,1000);
+}
+
+void driveForDuration(motorSpeed,duration){
+  moveL(motorSpeed,FWD);
+  moveR(motorSpeed,FWD);
+  delay(duration);
+
+  stopMotors();
 }

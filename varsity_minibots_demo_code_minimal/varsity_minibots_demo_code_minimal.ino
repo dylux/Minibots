@@ -27,25 +27,28 @@ void setup() {
     }
   }
   Serial.println("Sensor Found!!");
-
   delay(1000);
 }
 
 void loop() {
-  for(int i = 0; i<100; i++){
+  gripperSetPosition();
+  unsigned long time = millis();
+  while (millis() - time < 3*1000){
     driveInCorridor();
   }
   
   stopMotors();
+  delay(1000);
+  gripperGrasp();
   delay(10000);
 }
 
 void driveInCorridor(){
-  float distToLeft = readLeftUS();
-  float distToright = readRightUS();
-
-  float baseSpeed = 20;
-  float turnAmount = 20;
+  double distToLeft = readLeftUS();
+  double distToRight = readRightUS();
+  
+  float baseSpeed = 0;
+  float turnAmount = 70;
   float leftMotorSpeed = (distToRight / (distToRight+distToLeft))*turnAmount + baseSpeed;
   float rightMotorSpeed = (distToLeft / (distToRight+distToLeft))*turnAmount + baseSpeed;
 

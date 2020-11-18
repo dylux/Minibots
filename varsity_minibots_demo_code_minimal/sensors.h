@@ -9,11 +9,11 @@ extern UltraSonicDistanceSensor US_front;
 extern Adafruit_MPU6050 mpu;
 
 // Function to read values of the LEFT ultrasonic sensor
-float readLeftUS();
+double readLeftUS();
 // Function to read values of the RIGHT ultrasonic sensor
-float readRightUS();
+double readRightUS();
 // Function to read values of the FRONT ultrasonic sensor
-float readFrontUS();
+double readFrontUS();
 
 // Function to read values of the LEFT light sensor
 // Output true/false if it finds the line or not (can tuen on the sensor it self)

@@ -43,3 +43,9 @@
 
 #define FWD 1
 #define REV 0
+
+// ultrasonic settings
+
+#define US_NUM_READINGS 2
+#define INF 1e9
+#define WALL_DIST 15

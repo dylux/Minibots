@@ -31,8 +31,14 @@ void setup() {
 }
 
 void loop() {
-  gripperSetPosition();
-  unsigned long time = millis();
+  //Serial.println(readFrontUS());
+  //gripperSetPosition();
+  driveInCorridorUntilIntersection();
+  stopMotors();
+  delay(1000);
+  gripperGrasp();
+  delay(1000);
+  /*unsigned long time = millis();
   while (millis() - time < 3*1000){
     driveInCorridor();
   }
@@ -40,18 +46,23 @@ void loop() {
   stopMotors();
   delay(1000);
   gripperGrasp();
-  delay(10000);
+  delay(10000);*/
 }
 
-void driveInCorridor(){
+void driveInCorridorUntilIntersection(){
   double distToLeft = readLeftUS();
   double distToRight = readRightUS();
-  
-  float baseSpeed = 0;
-  float turnAmount = 70;
-  float leftMotorSpeed = (distToRight / (distToRight+distToLeft))*turnAmount + baseSpeed;
-  float rightMotorSpeed = (distToLeft / (distToRight+distToLeft))*turnAmount + baseSpeed;
 
-  moveL(leftMotorSpeed,FWD);
-  moveR(rightMotorSpeed,FWD);
+  while (max(distToLeft, distToRight) < WALL_DIST) {
+    float baseSpeed = 20;
+    float turnAmount = 50;
+    float leftMotorSpeed = (distToRight / (distToRight+distToLeft))*turnAmount + baseSpeed;
+    float rightMotorSpeed = (distToLeft / (distToRight+distToLeft))*turnAmount + baseSpeed;
+  
+    moveL(leftMotorSpeed,FWD);
+    moveR(rightMotorSpeed,FWD); 
+    
+    distToLeft = readLeftUS();
+    distToRight = readRightUS();
+  }
 }

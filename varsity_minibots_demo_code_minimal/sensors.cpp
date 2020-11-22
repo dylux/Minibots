@@ -36,3 +36,11 @@ double readFrontUS() {
 double readRightUS() {
   return readUS(US_right);
 }
+
+double readLeftLigth(){
+    return analogRead(LIGHT_LEFT);
+}
+
+double readRightLigth(){
+    return analogRead(LIGHT_RIGHT);
+}

@@ -17,10 +17,10 @@ double readFrontUS();
 
 // Function to read values of the LEFT light sensor
 // Output true/false if it finds the line or not (can tuen on the sensor it self)
-float readLeftLight();
+bool readLeftLight();
 // Function to read values of the RIGHT light sensor
 // Output true/false if it finds the line or not (can tuen on the sensor it self)
-float readRightLight();
+bool readRightLight();
 
 // Quick print function to see if all the ultrasonic sensors are funcitonal 
 void displayUS();

@@ -37,10 +37,10 @@ double readRightUS() {
   return readUS(US_right);
 }
 
-double readLeftLigth(){
-    return analogRead(LIGHT_LEFT);
+bool readLeftLight(){
+    return analogRead(LIGHT_LEFT)>500;
 }
 
-double readRightLigth(){
-    return analogRead(LIGHT_RIGHT);
+bool readRightLight(){
+    return analogRead(LIGHT_RIGHT)>500;
 }

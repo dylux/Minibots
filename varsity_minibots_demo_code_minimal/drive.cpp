@@ -4,6 +4,7 @@
 
 #include "drive.h"
 #include "sensors.h"
+#include "imu.h"
 
 Servo wrist;
 Servo gripper;
@@ -136,8 +137,8 @@ void turnDegreesRight(float targetAngle) {
     float angle = -getAngle();
     float error = targetAngle - angle;
     float motorPWM = basePWM + error*kp;
-    moveR(motorPWM, FWD);
-    moveL(motorPWM, REV);
+    moveR(motorPWM, REV);
+    moveL(motorPWM, FWD);
     if(abs(error) < 3) {
       break;
     }

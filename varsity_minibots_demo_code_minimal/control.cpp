@@ -9,48 +9,51 @@ void followLine(){
   float rightMotorSpeed = baseSpeed;
   float turnAmount = 20;
     
-  if (readLeftLight() == 1 && readRightLight() == 0){
+  if (readLeftLight() == 1 && readRightLight() ==0){
     leftMotorSpeed += turnAmount;
     rightMotorSpeed -= turnAmount;
   }
-  if(readLeftLight() == 0 && readRightLight() == 1){
+  if(readLeftLight() == 0 && readRightLight() ==1){
     rightMotorSpeed += turnAmount;
     leftMotorSpeed -= turnAmount;
   }
   moveL(leftMotorSpeed,FWD);
   moveR(rightMotorSpeed,FWD);
- }
+}
+
 
 // INTERSECTIONS
 // =============
 
 void followLineCarefullyUntilIntersection(){
   //Forward (depending on US) until intersection touched
-  for (;;) {
+  for (;;) {   
     while (!readLeftLight() && !readRightLight()) {
-        driveForDuration(40,10);
+      moveL(30,FWD);
+      moveR(30,FWD);
+      delay(10); 
     }
-    
+    stopMotors();
     //Try correction
     const int MAX_TURN_TRIES = 5;
     int turnTries = 0;
     if (readLeftLight()) {
-      for(; turnTries<MAX_TURN_TRIES; turnTries++){
-        turnDegreesLeft(1);
-        if(!readLeftLight())
-          break;
-      }
+        for(; turnTries<MAX_TURN_TRIES; turnTries++){
+            turnDegreesLeft(1);
+            if(!readLeftLight())
+                break;
+        }
     } else {
-      for(; turnTries<MAX_TURN_TRIES; turnTries++){
-        turnDegreesRight(1);
-        if(!readRightLight())
-          break;
-      }
+        for(; turnTries<MAX_TURN_TRIES; turnTries++){
+            turnDegreesRight(1);
+            if(!readRightLight())
+                break;
+        }
     }
 
     //If correction fails, we arrived at interesction
     if(turnTries==MAX_TURN_TRIES){
-      break;
+        break;
     }
   }
 }

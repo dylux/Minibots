@@ -36,3 +36,11 @@ double readFrontUS() {
 double readRightUS() {
   return readUS(US_right);
 }
+
+bool readLeftLight(){
+    return analogRead(LIGHT_LEFT)>500;
+}
+
+bool readRightLight(){
+    return analogRead(LIGHT_RIGHT)>500;
+}

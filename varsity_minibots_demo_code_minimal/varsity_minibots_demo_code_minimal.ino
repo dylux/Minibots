@@ -32,7 +32,8 @@ void setup() {
 
 void loop() {
   //Serial.println(readFrontUS());
-
+  followLine();
+  return;
   driveInCorridorUntilIntersection();
   stopMotors();
   delay(1000);
@@ -54,8 +55,8 @@ void driveInCorridorUntilIntersection(){
   double distToRight = readRightUS();
 
   while (max(distToLeft, distToRight) < WALL_DIST) {
-    float baseSpeed = 20;
-    float turnAmount = 50;
+    float baseSpeed = 40;
+    float turnAmount = 30;
     float leftMotorSpeed = (distToRight / (distToRight+distToLeft))*turnAmount + baseSpeed;
     float rightMotorSpeed = (distToLeft / (distToRight+distToLeft))*turnAmount + baseSpeed;
   
@@ -68,10 +69,15 @@ void driveInCorridorUntilIntersection(){
 }
 
 void handleIntersection(){
-  bool canGoLeft = (readLeftUS() > GRID_DIST);
-  bool canGoForward = (readFrontUS() > GRID_DIST);
-  bool canGoRight = (readRightUS() > GRID_DIST);
-  driveForDuration(40,500);
+  bool US_canGoLeft = (readLeftUS() > GRID_DIST);
+  bool US_canGoForward = (readFrontUS() > GRID_DIST);
+  bool US_canGoRight = (readRightUS() > GRID_DIST);
+
+  followLineCarefullyUntilIntersection();
+  
+  //Const forward movement
+  driveForDuration(40,100);
+  
   if(canGoRight){
     turnDegreesRight(90);
   }
@@ -84,3 +90,52 @@ void handleIntersection(){
   }
   driveForDuration(70,1000);
 }
+
+void followLineCarefullyUntilIntersection(){
+  //Forward (depending on US) until intersection touched
+  for (;;) {
+    while (!readLeftLigth() && !readRightLigth()) {
+        driveForDuration(40,10);
+    }
+    
+    //Try correction
+    const int MAX_TURN_TRIES = 5;
+    int turnTries = 0;
+    if (readLeftLigth()) {
+        for(; turnTries<MAX_TURN_TRIES; turnTries++){
+            turnDegreesLeft(1);
+            if(!readLeftLigth())
+                break;
+        }
+    } else {
+        for(; turnTries<MAX_TURN_TRIES; turnTries++){
+            turnDegreesRight(1);
+            if(!readRightLigth())
+                break;
+        }
+    }
+
+    //If correction fails, we arrived at interesction
+    if(turnTries==MAX_TURN_TRIES){
+        break;
+    }
+  }
+}
+
+void followLine(){
+    float baseSpeed = 40;
+    float leftMotorSpeed = baseSpeed;
+    float rightMotorSpeed = baseSpeed;
+    float turnAmount = 20;
+    
+  if (readLeftLight() == 1 && readRightLight() ==0){
+    leftMotorSpeed += turnAmount;
+    rightMotorSpeed -= turnAmount;
+  }
+  if(readLeftLight() == 0 && readRightLight() ==1){
+    rightMotorSpeed += turnAmount;
+    leftMotorSpeed -= turnAmount;
+  }
+  moveL(leftMotorSpeed,FWD);
+  moveR(rightMotorSpeed,FWD);
+ }

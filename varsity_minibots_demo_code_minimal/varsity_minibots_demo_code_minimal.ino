@@ -2,6 +2,7 @@
 #include "control.h"
 #include "sensors.h"
 #include "drive.h"
+#include "imu.h"
 
 void setup() {
   Serial.begin(115200); // Open serial monitor at 115200 baud to see ping results.
@@ -29,15 +30,20 @@ void setup() {
   }
   Serial.println("Sensor Found!!");
   delay(1000);
+  resetIMU();
 }
 
 void loop() {
-  while (!((readLeftUS() > GRID_DIST)||(readRightUS() > GRID_DIST))) {
+  pollIMU();
+  Serial.println(getDistance());
+  //moveForwardFor(1.0);
+  //delay(2000);
+  /*while (!((readLeftUS() > GRID_DIST)||(readRightUS() > GRID_DIST))) {
     followLine();
   }
   stopMotors();
   delay(1000);
   handleIntersection();
   stopMotors();
-  delay(1000);
+  delay(1000);*/
 }

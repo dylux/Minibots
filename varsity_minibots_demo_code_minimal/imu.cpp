@@ -7,13 +7,16 @@
 unsigned long prevtime;
 float angle = 0;
 float distance = 0;
+float velocity = 0;
 sensors_event_t a, g, temp;
-float tuningFactor = 0.000605;
+float angleTuningFactor = 0.000605;
+float accelTuningFactor = 0.03;
 
 void resetIMU() {
   prevtime = micros();
   angle = 0;
   distance = 0;
+  velocity = 0;
 }
 
 void pollIMU() {
@@ -23,8 +26,11 @@ void pollIMU() {
   prevtime = curtime;
   
   float angleAdjustment = delta / 1000000.0 / PI * 180.0;
-  angle += (g.gyro.z + tuningFactor) * angleAdjustment;
-  distance += delta * delta * (-g.acceleration.x) / 2;
+  angle += (g.gyro.z + angleTuningFactor) * angleAdjustment;
+
+  float accel = g.acceleration.x + accelTuningFactor;
+  velocity += (delta / 1000000.0) * accel;
+  distance += (delta / 1000000.0) * velocity;
 }
 
 float getAngle() {

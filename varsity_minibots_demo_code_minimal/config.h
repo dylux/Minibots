@@ -43,6 +43,10 @@
 
 #define FWD 1
 #define REV 0
+//#define LEFT_RATIO 0.85
+//#define RIGHT_RATIO 1.15
+#define LEFT_RATIO 1
+#define RIGHT_RATIO 1
 
 // ultrasonic settings
 

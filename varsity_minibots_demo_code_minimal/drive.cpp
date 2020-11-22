@@ -10,7 +10,7 @@ Servo gripper;
 
 // Move the right motor (values depend on the specific wiring configuration)
 void moveR(float power, bool dir) {
-
+  power *= RIGHT_RATIO;
   if(power > 100) {
     power = 100;
   }
@@ -36,7 +36,7 @@ void moveR(float power, bool dir) {
 
 // Move the left motor (values depend on the specific wiring configuration)
 void moveL(float power, bool dir) {
-
+  power *= LEFT_RATIO;
   if(power > 100) {
     power = 100;
   }
@@ -104,72 +104,58 @@ void gripperGrasp() {
 }
 
 
+
+
 // Turn left(counterclockwise when viewed from above) using a proportional control on the gyro sensor readings
 void turnDegreesLeft(float targetAngle) {
-  float integral = 0;
-  // float angleAdjustment = 0.45;
+  resetIMU();
   float basePWM = 40;
-  float kp = 0.2;
+  float kp = 0.4;
   unsigned long prevtime = micros();
   while(true) {
-    sensors_event_t a, g, temp;
-    mpu.getEvent(&a, &g, &temp);
-    unsigned long curtime = micros();
-    float delta = curtime - prevtime;
-
-    prevtime = curtime;
-    Serial.println(delta);
-    
-    float angleAdjustment = delta / 1000000.0 / PI * 180.0;
-    
-    integral += g.gyro.z * angleAdjustment;
-
-    float error = targetAngle - integral;
+    pollIMU();
+    float angle = getAngle();
+    float error = targetAngle - angle;
     float motorPWM = basePWM + error*kp;
-
     moveR(motorPWM, FWD);
     moveL(motorPWM, REV);
-    Serial.println(integral);
-
     if(abs(error) < 3) {
       break;
     }
   }
-
   stopMotors();
 }
 
 void turnDegreesRight(float targetAngle) {
-  float integral = 0;
-  // float angleAdjustment = 0.45;
+  resetIMU();
   float basePWM = 40;
-  float kp = 2;
+  float kp = 0.4;
   unsigned long prevtime = micros();
   while(true) {
-    sensors_event_t a, g, temp;
-    mpu.getEvent(&a, &g, &temp);
-    unsigned long curtime = micros();
-    float delta = curtime - prevtime;
-
-    prevtime = curtime;
-    //Serial.println(delta);
-    
-    float angleAdjustment = delta / 1000000.0 / PI * 180.0;
-    
-    integral += g.gyro.z * angleAdjustment;
-
-    float error = integral - targetAngle;
+    pollIMU();
+    float angle = -getAngle();
+    float error = targetAngle - angle;
     float motorPWM = basePWM + error*kp;
-
-    moveR(motorPWM, REV);
-    moveL(motorPWM, FWD);
-    Serial.println(integral);
-    Serial.println(targetAngle);
-
+    moveR(motorPWM, FWD);
+    moveL(motorPWM, REV);
     if(abs(error) < 3) {
       break;
     }
   }
+  stopMotors();
+}
 
+void moveForwardFor(float distance) {
+  resetIMU();
+  float basePWM = 50;
+  float angleFactor = 5;
+  while(getDistance() < distance) {
+    sensors_event_t a, g, temp;
+    mpu.getEvent(&a, &g, &temp);
+    pollIMU();
+    float motorPWM = getAngle();
+    moveR(abs(basePWM-motorPWM), FWD);
+    moveL(abs(basePWM+motorPWM), FWD);
+  }
   stopMotors();
 }

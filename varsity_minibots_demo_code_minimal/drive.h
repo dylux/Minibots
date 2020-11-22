@@ -29,3 +29,5 @@ void followRightWall(float frontDistanceCutoff);
 
 // Smash into the wall and then move back a little bit for the 90 degree turn
 void adjustWithWall();
+
+void moveForward();

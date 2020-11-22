@@ -32,9 +32,10 @@ void setup() {
 
 void loop() {
   //Serial.println(readFrontUS());
-  followLine();
-  return;
-  driveInCorridorUntilIntersection();
+  while (!((readLeftUS() > GRID_DIST)||(readRightUS() > GRID_DIST))) {
+    followLine();
+  }
+  //driveInCorridorUntilIntersection();
   stopMotors();
   delay(1000);
   handleIntersection();
@@ -69,9 +70,9 @@ void driveInCorridorUntilIntersection(){
 }
 
 void handleIntersection(){
-  bool US_canGoLeft = (readLeftUS() > GRID_DIST);
-  bool US_canGoForward = (readFrontUS() > GRID_DIST);
-  bool US_canGoRight = (readRightUS() > GRID_DIST);
+  bool canGoLeft = (readLeftUS() > GRID_DIST);
+  bool canGoForward = (readFrontUS() > GRID_DIST);
+  bool canGoRight = (readRightUS() > GRID_DIST);
 
   followLineCarefullyUntilIntersection();
   
@@ -93,24 +94,26 @@ void handleIntersection(){
 
 void followLineCarefullyUntilIntersection(){
   //Forward (depending on US) until intersection touched
-  for (;;) {
-    while (!readLeftLigth() && !readRightLigth()) {
-        driveForDuration(40,10);
+  for (;;) {   
+    while (!readLeftLight() && !readRightLight()) {
+      moveL(30,FWD);
+      moveR(30,FWD);
+      delay(10); 
     }
-    
+    stopMotors();
     //Try correction
     const int MAX_TURN_TRIES = 5;
     int turnTries = 0;
-    if (readLeftLigth()) {
+    if (readLeftLight()) {
         for(; turnTries<MAX_TURN_TRIES; turnTries++){
             turnDegreesLeft(1);
-            if(!readLeftLigth())
+            if(!readLeftLight())
                 break;
         }
     } else {
         for(; turnTries<MAX_TURN_TRIES; turnTries++){
             turnDegreesRight(1);
-            if(!readRightLigth())
+            if(!readRightLight())
                 break;
         }
     }

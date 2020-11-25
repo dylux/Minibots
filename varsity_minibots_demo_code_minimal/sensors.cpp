@@ -11,9 +11,9 @@ Adafruit_MPU6050 mpu;
 double readUS(UltraSonicDistanceSensor &US) {
     double total = 0.0;
     int numReadings = 0;
-    for (int i = 0; i < US_NUM_READINGS; i++) {
+    while (numReadings < US_NUM_READINGS) {
         double val = US.measureDistanceCm();
-        if (val > 0) {
+        if (300 > val && val > 0) {
             numReadings++;
             total += val;
         }

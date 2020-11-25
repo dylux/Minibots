@@ -56,15 +56,35 @@ void followLineCarefullyUntilIntersection() {
     }
 }
 
+bool detectIntersection(){
+  return (readLeftUS() > GRID_DIST) || (readRightUS() > GRID_DIST);
+  //Serial.println(readFrontUS());
+  //delay(100);
+  //return(readFrontUS()<18);
+}
+
 void handleIntersection() {
+
+    //followLineCarefullyUntilIntersection();
+    
+    while(readFrontUS()>18){
+      followLine();
+    }
+    
+    // Const forward movement
+    float dist;
+    do {
+      moveL(40,FWD);
+      moveR(40,FWD);
+      dist = readFrontUS();
+      Serial.println(dist);
+    } while(dist>4 && dist<100);
+    stopMotors();
+    //driveForDuration(40, 1400);
+    
     bool canGoLeft = (readLeftUS() > GRID_DIST);
     bool canGoForward = (readFrontUS() > GRID_DIST);
     bool canGoRight = (readRightUS() > GRID_DIST);
-
-    followLineCarefullyUntilIntersection();
-
-    // Const forward movement
-    driveForDuration(40, 100);
 
     if (canGoRight) {
         turnDegreesRight(90);
@@ -74,7 +94,7 @@ void handleIntersection() {
     } else {
         turnDegreesLeft(180);
     }
-    driveForDuration(70, 1000);
+    //driveForDuration(40, 1000);
 }
 
 // DEPRECATED

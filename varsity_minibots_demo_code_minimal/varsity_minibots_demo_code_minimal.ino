@@ -35,11 +35,12 @@ void setup() {
 }
 
 void loop() {
-    pollIMU();
-    Serial.println(getDistance());
+    //pollIMU();
+    Serial.println(readFrontUS());
     // moveForwardFor(1.0);
     // delay(2000);
-    /*while (!((readLeftUS() > GRID_DIST)||(readRightUS() > GRID_DIST))) {
+    
+    /*while (!detectIntersection()) {
         followLine();
     }
     stopMotors();

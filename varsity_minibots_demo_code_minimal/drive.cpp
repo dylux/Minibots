@@ -93,8 +93,8 @@ void gripperGrasp() {
 
     gripper.write(175);
     delay(1000);
-    wrist.write(60);
-    delay(300);
+    wrist.write(70);
+    delay(2000);
 
     wrist.detach();
     gripper.detach();
@@ -104,8 +104,8 @@ void gripperGrasp() {
 // control on the gyro sensor readings
 void turnDegreesLeft(float targetAngle) {
     resetIMU();
-    float basePWM = 40;
-    float kp = 0.4;
+    float basePWM = 50;
+    float kp = 0.35;
     unsigned long prevtime = micros();
     while (true) {
         pollIMU();

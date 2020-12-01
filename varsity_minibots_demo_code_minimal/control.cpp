@@ -5,10 +5,10 @@
 #include "sensors.h"
 
 void followLine() {
-    float baseSpeed = 50;
+    float baseSpeed = 45;
     float leftMotorSpeed = baseSpeed;
     float rightMotorSpeed = baseSpeed;
-    float turnAmount = 30;
+    float turnAmount = 20;
 
     if (readLeftLight() == 1 && readRightLight() == 0) {
         leftMotorSpeed += turnAmount;
@@ -95,6 +95,34 @@ void handleIntersection() {
         turnDegreesLeft(180);
     }
     //driveForDuration(40, 1000);
+}
+
+void grabBall(){
+    stopMotors();
+    gripperGrasp();
+    turnDegreesLeft(120);
+    delay(1000);
+    turnLeftUntilLine();
+    delay(1000);
+
+    
+    wrist.attach(WRIST_PIN);
+    wrist.write(30);
+    delay(1000);
+
+    wrist.detach();
+}
+
+void turnLeftUntilLine(){
+    while(readLeftLight() == 1){
+      moveL(60,REV);
+      moveR(60,FWD);
+    }
+    while(readLeftLight() == 0){
+      moveL(60,REV);
+      moveR(60,FWD);
+    }
+    stopMotors();
 }
 
 // DEPRECATED

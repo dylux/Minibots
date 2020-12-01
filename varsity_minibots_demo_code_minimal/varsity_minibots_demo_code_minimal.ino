@@ -32,14 +32,23 @@ void setup() {
     Serial.println("Sensor Found!!");
     delay(1000);
     resetIMU();
+
+    gripperSetPosition();
 }
 
 void loop() {
     //pollIMU();
+          //grabBall();
+          //delay(10000000000);
     
     while (readRightUS()<20 && readLeftUS()<20) {
         Serial.println(readRightUS(),readLeftUS());
         followLine();
+
+        if(readLeftLight() == 0 && readRightLight()==0){
+          grabBall();
+          delay(2000);
+        }
     }
     Serial.println("step 1");
     stopMotors();
@@ -58,15 +67,7 @@ void loop() {
     moveUntilWall(8);
     stopMotors();
     delay(500);
-    
-    while(readLeftLight() == 1){
-      moveL(70,REV);
-      moveR(70,FWD);
-    }
-    while(readLeftLight() == 0){
-      moveL(70,REV);
-      moveR(70,FWD);
-    }
+    turnLeftUntilLine();
     //turnDegreesLeft(90);
     stopMotors();
 

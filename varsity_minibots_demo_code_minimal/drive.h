@@ -31,4 +31,4 @@ void followRightWall(float frontDistanceCutoff);
 void adjustWithWall();
 
 void moveForward();
-void moveForwardFor(float distance);
+void moveUntilWall(float distance);

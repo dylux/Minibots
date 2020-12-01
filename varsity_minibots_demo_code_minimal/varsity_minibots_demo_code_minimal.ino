@@ -36,16 +36,42 @@ void setup() {
 
 void loop() {
     //pollIMU();
-    Serial.println(readFrontUS());
-    // moveForwardFor(1.0);
-    // delay(2000);
     
-    /*while (!detectIntersection()) {
+    while (readRightUS()<20 && readLeftUS()<20) {
+        Serial.println(readRightUS(),readLeftUS());
         followLine();
     }
+    Serial.println("step 1");
     stopMotors();
-    delay(1000);
-    handleIntersection();
+    delay(500);
+    Serial.println("step 2");
+    
+    while (readFrontUS()>17) {
+        Serial.println(readFrontUS());
+        followLine();
+    }
+    Serial.println("In intersection");
     stopMotors();
-    delay(1000);*/
+    delay(500);
+
+    Serial.println("step 4");
+    moveUntilWall(8);
+    stopMotors();
+    delay(500);
+    
+    while(readLeftLight() == 1){
+      moveL(70,REV);
+      moveR(70,FWD);
+    }
+    while(readLeftLight() == 0){
+      moveL(70,REV);
+      moveR(70,FWD);
+    }
+    //turnDegreesLeft(90);
+    stopMotors();
+
+    delay(2000);
+    //handleIntersection();
+    //stopMotors();
+    //delay(1000);*/
 }

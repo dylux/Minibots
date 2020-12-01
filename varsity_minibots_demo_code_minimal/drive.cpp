@@ -154,3 +154,26 @@ void moveForwardFor(float distance) {
     }
     stopMotors();
 }
+
+void moveUntilWall(float distance) {
+    resetIMU();
+    float basePWM = 50;
+    float angleFactor = 5;
+    int closeReadings = 0;
+    while (closeReadings<5) {
+        float d = readFrontUS();
+        Serial.println(d);
+        if(d<distance){
+          closeReadings++;
+        } else{
+          closeReadings = 0;
+        }
+        sensors_event_t a, g, temp;
+        mpu.getEvent(&a, &g, &temp);
+        pollIMU();
+        float motorPWM = getAngle();
+        moveR(abs(basePWM - motorPWM), FWD);
+        moveL(abs(basePWM + motorPWM), FWD);
+    }
+    stopMotors();
+}

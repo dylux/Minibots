@@ -5,10 +5,10 @@
 #include "sensors.h"
 
 void followLine() {
-    float baseSpeed = 40;
+    float baseSpeed = 50;
     float leftMotorSpeed = baseSpeed;
     float rightMotorSpeed = baseSpeed;
-    float turnAmount = 20;
+    float turnAmount = 30;
 
     if (readLeftLight() == 1 && readRightLight() == 0) {
         leftMotorSpeed += turnAmount;

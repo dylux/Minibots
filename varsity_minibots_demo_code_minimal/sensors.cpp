@@ -31,6 +31,16 @@ double readFrontUS() { return readUS(US_front); }
 
 double readRightUS() { return readUS(US_right); }
 
-bool readLeftLight() { return analogRead(LIGHT_LEFT) > 500; }
+bool readLeftLight() { 
+  float v = analogRead(LIGHT_LEFT);
+  Serial.print("Left: ");
+  Serial.println(v);
+  return v > 500; 
+ }
 
-bool readRightLight() { return analogRead(LIGHT_RIGHT) > 500; }
+bool readRightLight() { 
+  float v = analogRead(LIGHT_RIGHT);
+  Serial.print("Right: ");
+  Serial.println(v);
+  return v > 500; 
+ }

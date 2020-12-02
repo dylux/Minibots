@@ -4,22 +4,27 @@
 #include "drive.h"
 #include "sensors.h"
 
-void followLine() {
+bool followLine() {
     float baseSpeed = 45;
     float leftMotorSpeed = baseSpeed;
     float rightMotorSpeed = baseSpeed;
     float turnAmount = 20;
 
-    if (readLeftLight() == 1 && readRightLight() == 0) {
+    bool leftLight = readLeftLight();
+    bool rightLight = readRightLight();
+
+    if (leftLight == 1 && rightLight == 0) {
         leftMotorSpeed += turnAmount;
         rightMotorSpeed -= turnAmount;
     }
-    if (readLeftLight() == 0 && readRightLight() == 1) {
+    if (leftLight == 0 && rightLight == 1) {
         rightMotorSpeed += turnAmount;
         leftMotorSpeed -= turnAmount;
     }
     moveL(leftMotorSpeed, FWD);
     moveR(rightMotorSpeed, FWD);
+
+    return leftLight==0 && rightLight==0;
 }
 
 // INTERSECTIONS
@@ -64,46 +69,49 @@ bool detectIntersection(){
 }
 
 void handleIntersection() {
-
-    //followLineCarefullyUntilIntersection();
+    Serial.println("step 2");
     
-    while(readFrontUS()>18){
+    while (readFrontUS()>17) {
+        Serial.println(readFrontUS());
+        followLine();
+    }
+    Serial.println("In intersection");
+    stopMotors();
+    delay(500);
+
+    bool openLeft = readLeftUS()>10;
+    
+
+    Serial.println("step 4");
+    moveUntilWall(8);
+    stopMotors();
+    delay(500);
+
+    if(openLeft)
+      turnLeftUntilLine();
+    else
+      turnRightUntilLine();
+
+    delay(500);
+
+    for(int i = 0; i<500; i++){
       followLine();
     }
-    
-    // Const forward movement
-    float dist;
-    do {
-      moveL(40,FWD);
-      moveR(40,FWD);
-      dist = readFrontUS();
-      Serial.println(dist);
-    } while(dist>4 && dist<100);
     stopMotors();
-    //driveForDuration(40, 1400);
-    
-    bool canGoLeft = (readLeftUS() > GRID_DIST);
-    bool canGoForward = (readFrontUS() > GRID_DIST);
-    bool canGoRight = (readRightUS() > GRID_DIST);
-
-    if (canGoRight) {
-        turnDegreesRight(90);
-    } else if (canGoForward) {
-    } else if (canGoLeft) {
-        turnDegreesLeft(90);
-    } else {
-        turnDegreesLeft(180);
-    }
-    //driveForDuration(40, 1000);
+    delay(500);
 }
 
 void grabBall(){
     stopMotors();
+    Serial.println("Ball 1");
     gripperGrasp();
+    Serial.println("Ball 2");
     turnDegreesLeft(120);
-    delay(1000);
+    Serial.println("Ball 3");
+    delay(500);
     turnLeftUntilLine();
-    delay(1000);
+    Serial.println("Ball 4");
+    delay(500);
 
     
     wrist.attach(WRIST_PIN);
@@ -111,6 +119,7 @@ void grabBall(){
     delay(1000);
 
     wrist.detach();
+    Serial.println("Ball 5followLine");
 }
 
 void turnLeftUntilLine(){
@@ -119,8 +128,22 @@ void turnLeftUntilLine(){
       moveR(60,FWD);
     }
     while(readLeftLight() == 0){
-      moveL(60,REV);
-      moveR(60,FWD);
+      moveL(50,REV);
+      moveR(50,FWD);
+    }
+    stopMotors();
+}
+
+
+
+void turnRightUntilLine(){
+    while(readRightLight() == 1){
+      moveL(60,FWD);
+      moveR(60,REV);
+    }
+    while(readRightLight() == 0){
+      moveL(50,FWD);
+      moveR(50,REV);
     }
     stopMotors();
 }

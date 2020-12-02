@@ -29,7 +29,7 @@ void setup() {
             delay(10);
         }
     }
-    Serial.println("Sensor Found!!");
+    Serial.println("SensoreadRightUSr Found!!");
     delay(1000);
     resetIMU();
 
@@ -37,15 +37,12 @@ void setup() {
 }
 
 void loop() {
-    //pollIMU();
-          //grabBall();
-          //delay(10000000000);
-    
     while (readRightUS()<20 && readLeftUS()<20) {
-        Serial.println(readRightUS(),readLeftUS());
-        followLine();
+        Serial.println("Following line ");
+        bool detectedBall = followLine();
 
-        if(readLeftLight() == 0 && readRightLight()==0){
+        if(detectedBall){
+          Serial.println("Ball!");
           grabBall();
           delay(2000);
         }
@@ -53,26 +50,8 @@ void loop() {
     Serial.println("step 1");
     stopMotors();
     delay(500);
-    Serial.println("step 2");
+
+    handleIntersection();
+
     
-    while (readFrontUS()>17) {
-        Serial.println(readFrontUS());
-        followLine();
-    }
-    Serial.println("In intersection");
-    stopMotors();
-    delay(500);
-
-    Serial.println("step 4");
-    moveUntilWall(8);
-    stopMotors();
-    delay(500);
-    turnLeftUntilLine();
-    //turnDegreesLeft(90);
-    stopMotors();
-
-    delay(2000);
-    //handleIntersection();
-    //stopMotors();
-    //delay(1000);*/
 }

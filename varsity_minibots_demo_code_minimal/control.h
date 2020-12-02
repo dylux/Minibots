@@ -1,8 +1,9 @@
 #include "config.h"
-void followLine();
+bool followLine();
 void driveInCorridorUntilIntersection();
 void handleIntersection();
 void followLineCarefullyUntilIntersection();
 bool detectIntersection();
 void grabBall();
 void turnLeftUntilLine();
+void turnRightUntilLine();

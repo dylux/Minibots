@@ -6,6 +6,7 @@
 
 #include "imu.h"
 #include "sensors.h"
+#include "control.h"
 
 Servo wrist;
 Servo gripper;
@@ -91,10 +92,10 @@ void gripperGrasp() {
     wrist.attach(WRIST_PIN);
     gripper.attach(GRIPPER_PIN);
 
-    gripper.write(175);
-    delay(1000);
+    gripper.write(190);
+    delay(500);
     wrist.write(70);
-    delay(2000);
+    delay(500);
 
     wrist.detach();
     gripper.detach();
@@ -108,6 +109,9 @@ void turnDegreesLeft(float targetAngle) {
     float kp = 0.35;
     unsigned long prevtime = micros();
     while (true) {
+        if(fixGettingStuck()){
+          return;  
+        }
         pollIMU();
         float angle = getAngle();
         float error = targetAngle - angle;
@@ -127,6 +131,7 @@ void turnDegreesRight(float targetAngle) {
     float kp = 0.4;
     unsigned long prevtime = micros();
     while (true) {
+        fixGettingStuck();
         pollIMU();
         float angle = -getAngle();
         float error = targetAngle - angle;
@@ -161,6 +166,7 @@ void moveUntilWall(float distance) {
     float angleFactor = 5;
     int closeReadings = 0;
     while (closeReadings<5) {
+        fixGettingStuck();
         float d = readFrontUS();
         Serial.println(d);
         if(d<distance){

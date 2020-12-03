@@ -7,3 +7,4 @@ bool detectIntersection();
 void grabBall();
 void turnLeftUntilLine();
 void turnRightUntilLine();
+bool fixGettingStuck();

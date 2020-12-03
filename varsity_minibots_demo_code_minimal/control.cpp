@@ -3,12 +3,50 @@
 #include "config.h"
 #include "drive.h"
 #include "sensors.h"
+#include "imu.h"
+
+bool fixGettingStuck(){
+  pollIMU();
+  
+    Serial.print("Last movement: ");
+    Serial.println(getLastTimeOfMovement());
+  if(getLastTimeOfMovement()>5000000){
+    Serial.println("STUCK");
+    Serial.println("STUCK");
+    Serial.println("STUCK");
+    Serial.println("STUCK");
+    stopMotors();
+
+    wrist.attach(WRIST_PIN);
+    wrist.write(30);
+    wrist.detach();
+    
+    moveL(60,REV);
+    moveR(60,REV);
+    delay(300);
+    stopMotors();
+    moveL(60,REV);
+    moveR(60,FWD);
+    delay(200 + rand()%100);
+    stopMotors();
+    moveL(60,FWD);
+    moveR(60,REV);
+    delay(200 + rand()%100);
+    stopMotors();
+    moveL(60,FWD);
+    moveR(60,FWD);
+    delay(200);
+    stopMotors();
+    return true;
+  }  
+  return false;
+}
 
 bool followLine() {
-    float baseSpeed = 45;
+    float baseSpeed = 50;
     float leftMotorSpeed = baseSpeed;
     float rightMotorSpeed = baseSpeed;
-    float turnAmount = 20;
+    float turnAmount = 23;
 
     bool leftLight = readLeftLight();
     bool rightLight = readRightLight();
@@ -72,6 +110,7 @@ void handleIntersection() {
     Serial.println("step 2");
     
     while (readFrontUS()>17) {
+        fixGettingStuck();
         Serial.println(readFrontUS());
         followLine();
     }
@@ -94,7 +133,7 @@ void handleIntersection() {
 
     delay(500);
 
-    for(int i = 0; i<500; i++){
+    for(int i = 0; i<300; i++){
       followLine();
     }
     stopMotors();
@@ -124,10 +163,12 @@ void grabBall(){
 
 void turnLeftUntilLine(){
     while(readLeftLight() == 1){
+        fixGettingStuck();
       moveL(60,REV);
       moveR(60,FWD);
     }
     while(readLeftLight() == 0){
+        fixGettingStuck();
       moveL(50,REV);
       moveR(50,FWD);
     }
@@ -138,15 +179,18 @@ void turnLeftUntilLine(){
 
 void turnRightUntilLine(){
     while(readRightLight() == 1){
+        fixGettingStuck();
       moveL(60,FWD);
       moveR(60,REV);
     }
     while(readRightLight() == 0){
+        fixGettingStuck();
       moveL(50,FWD);
       moveR(50,REV);
     }
     stopMotors();
 }
+
 
 // DEPRECATED
 // ==========

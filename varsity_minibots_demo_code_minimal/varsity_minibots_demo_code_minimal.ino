@@ -29,7 +29,7 @@ void setup() {
             delay(10);
         }
     }
-    Serial.println("SensoreadRightUSr Found!!");
+    Serial.println("Sensor Found!!");
     delay(1000);
     resetIMU();
 
@@ -40,11 +40,18 @@ void loop() {
     while (readRightUS()<20 && readLeftUS()<20) {
         Serial.println("Following line ");
         bool detectedBall = followLine();
-
+        fixGettingStuck();
         if(detectedBall){
           Serial.println("Ball!");
+          moveL(40,FWD);
+          moveR(40,FWD);
+          delay(300);//TUNE AT COMPETITION
+          stopMotors();
+          delay(500);
+
+          
           grabBall();
-          delay(2000);
+          delay(500);
         }
     }
     Serial.println("step 1");
